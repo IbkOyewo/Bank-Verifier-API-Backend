@@ -8,7 +8,6 @@ const registerUser = async(req, res, next) => {
         const { body } = req
         const createUser = await userSignup(body)
         const { password, ...user} = createUser
-
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

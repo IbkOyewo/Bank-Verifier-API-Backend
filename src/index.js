@@ -5,16 +5,16 @@ const router = require('./route')
 const cookieparser = require('cookie-parser')
 
 const app = express()
-const port = 3500
+const port =  process.env.PORT || 3500;
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({
     extended: true
-}))
-app.use(cookieparser())
+}));
+app.use(cookieparser());
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.status(200).json({
         status: 'success',
         code: 200,
@@ -23,17 +23,20 @@ app.get('/', (req, res) => {
     })
 })
 
-app.use(router)
+app.use(router);
 
-app.use((req, res) => {
-    res.send('Not Found')
+app.use((_req, _res, next) => {
+    next({
+      status: 404,
+      message: 'Not found'
+    })
 })
 
 app.use((error, req, res, next) => {
   console.log(error)
-    res.status(500).json({
+    res.status(error.status || 500).json({
         status: 'failed',
-        message: 'internal server error',
+        message: error.message || 'internal server error',
         data: []
     })
 })
